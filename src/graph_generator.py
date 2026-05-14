@@ -1,0 +1,59 @@
+import random
+import pandas as pd
+
+
+class Graph:
+
+    def __init__(self, num_nodes: int):
+        self.num_nodes = num_nodes
+        self.adjacency_list = {i: [] for i in range(num_nodes)}
+
+    def add_edge(self, u, v, weight, directed=False):
+        if weight < 0:
+            raise ValueError("Dijkstra membutuhkan bobot non-negatif!")
+
+        self.adjacency_list[u].append((v, weight))
+        if not directed:
+            self.adjacency_list[v].append((u, weight))
+
+    def neighbors(self, node):
+        return self.adjacency_list[node]
+
+    def __repr__(self):
+        lines = [f"Graf dengan {self.num_nodes} node:"]
+        for u, edges in self.adjacency_list.items():
+            for v, w in edges:
+                lines.append(f"  {u} --{w}--> {v}")
+        return "\n".join(lines)
+
+def generate_random_edges(num_nodes, edge_probability=0.3, max_weight=20):
+    graph = Graph(num_nodes)
+    for i in range(graph.num_nodes):
+        for j in range(i + 1, graph.num_nodes):
+
+            if random.random() < edge_probability:
+                weight = random.randint(1, max_weight)
+
+                graph.add_edge(i, j, weight)
+    return graph
+
+def data_from_file():
+    df = pd.read_csv('data/betweenness_datasets_public/PT/graph-prt-lisbon.csv', sep=';')
+    max_node = max(df['id1'].max(), df['id2'].max())
+    graph = Graph(max_node)
+    for _, row in df.iterrows():
+        graph.add_edge(row['id1'], row['id2'], row['dist'], True)
+    return graph
+
+def create_sample_graph():
+    graph = Graph(6)
+    graph.add_edge(0, 1, 7)
+    graph.add_edge(0, 2, 9)
+    graph.add_edge(0, 5, 14)
+    graph.add_edge(1, 2, 10)
+    graph.add_edge(1, 3, 15)
+    graph.add_edge(2, 3, 11)
+    graph.add_edge(2, 5, 2)
+    graph.add_edge(3, 4, 6)
+    graph.add_edge(4, 5, 9)
+    return graph
