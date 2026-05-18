@@ -57,3 +57,15 @@ def create_sample_graph():
     graph.add_edge(3, 4, 6)
     graph.add_edge(4, 5, 9)
     return graph
+
+def create_dense_graph(num_nodes: int, max_weight: int = 50) -> Graph:
+    """
+    Buat graf padat (dense) — setiap node terhubung ke semua node lain.
+    Digunakan untuk menguji performa di kondisi terburuk.
+    """
+    g = Graph(num_nodes)
+    for u in range(num_nodes):
+        for v in range(u + 1, num_nodes):
+            w = random.randint(1, max_weight)
+            g.add_edge(u, v, w)
+    return g
