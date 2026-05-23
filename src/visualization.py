@@ -252,7 +252,7 @@ def plot_benchmark_results(benchmark_data: list, metric: str = "avg_time_ms", se
         ax1.set_xticks(node_sizes)
 
         ax1.set_xlabel("Jumlah Node", fontsize=11)
-        ax1.set_ylabel('Jumlah Operasi', fontsize=11)
+        ax1.set_ylabel(y_label, fontsize=11)
         ax1.set_title('Basic Dijkstra', fontsize=13, fontweight="500", pad=15)
         ax1.legend(fontsize=10, framealpha=0.9, facecolor=COLOR["bg"])
         ax1.grid(True, alpha=0.3, color="#B4B2A9")
