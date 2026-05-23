@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import numpy as np
 import networkx as nx
 from src.dijkstra import reconstruct_path, dijkstra_basic, dijkstra_binary_heap, dijkstra_fibonacci_heap, dijkstra_postorder_heap
 
@@ -109,7 +110,7 @@ def visualize_graph_with_path(graph, distances: list, predecessors: list,
         title = (f"Dijkstra + {heap_name}\n"
                  f"Jalur terpendek {source}→{target}: {path_str}  (jarak = {dist_str})")
 
-    ax.set_title(title, fontsize=12, fontweight="500", pad=15)
+    ax.set_title(title, fontsize=13, fontweight="500", pad=15)
     ax.axis("off")
 
     # Legenda
@@ -241,43 +242,90 @@ def plot_benchmark_results(benchmark_data: list, metric: str = "avg_time_ms", se
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
         fig.patch.set_facecolor(COLOR["bg"])
 
-        fig.suptitle(chart_title, fontsize=13, fontweight="500", y=1.02)
+        fig.suptitle(chart_title, fontsize=13, fontweight="500", y=0.98)
 
         ax1.plot(
             node_sizes, vals_basic, "D-", color=COLOR["basic"],
             linewidth=2, markersize=7, label="Basic Dijkstra", zorder=3
         )
 
+        ax1.set_xticks(node_sizes)
+
         ax1.set_xlabel("Jumlah Node", fontsize=11)
-        ax1.set_ylabel(y_label, fontsize=11)
+        ax1.set_ylabel('Jumlah Operasi', fontsize=11)
         ax1.set_title('Basic Dijkstra', fontsize=13, fontweight="500", pad=15)
         ax1.legend(fontsize=10, framealpha=0.9, facecolor=COLOR["bg"])
         ax1.grid(True, alpha=0.3, color="#B4B2A9")
 
         ax1.spines[["top", "right"]].set_visible(False)
 
-        ax2.plot(
-            node_sizes, vals_bin,  "o-", color=COLOR["binary"],
-            linewidth=2, markersize=7, label="Binary Heap", zorder=3
-        )
-        ax2.plot(
-            node_sizes, vals_fib,  "s-", color=COLOR["fibonacci"],
-            linewidth=2, markersize=7, label="Fibonacci Heap", zorder=3
-        )
-        ax2.plot(
-            node_sizes, vals_post, "^-", color=COLOR["postorder"],
-            linewidth=2.5, markersize=8, label="Post-order Heap (Brodal 2024)",
-            zorder=4, linestyle="--"
+        ax2.set_facecolor(COLOR["bg"])
+
+        x = np.arange(len(node_sizes))
+
+        width = 0.25
+
+        bars1 = ax2.bar(
+            x - width,
+            vals_bin,
+            width,
+            color=COLOR["binary"],
+            label="Binary Heap",
         )
 
-        ax2.set_xlabel("Jumlah Node", fontsize=11)
-        ax2.set_ylabel(y_label, fontsize=11)
-        ax2.set_title('Priority Queues', fontsize=13, fontweight="500", pad=15)
-        ax2.legend(fontsize=10, framealpha=0.9, facecolor=COLOR["bg"])
-        ax2.grid(True, alpha=0.3, color="#B4B2A9")
+        bars2 = ax2.bar(
+            x,
+            vals_fib,
+            width,
+            color=COLOR["fibonacci"],
+            label="Fibonacci Heap",
+        )
+
+        bars3 = ax2.bar(
+            x + width,
+            vals_post,
+            width,
+            color=COLOR["postorder"],
+            label="Post-order Heap",
+        )
+
+        ax2.set_xticks(x)
+        ax2.set_xticklabels(node_sizes)
+
+        ax2.set_xlabel("Jumlah Node", fontsize=12)
+        ax2.set_ylabel("Jumlah Operasi", fontsize=12)
+
+        ax2.set_title(
+            "Priority Queues",
+            fontsize=13,
+            fontweight="500",
+            pad=15,
+        )
+
+        ax2.grid(True, axis="y", alpha=0.3)
+
+        ax2.legend()
+
         ax2.spines[["top", "right"]].set_visible(False)
 
-        plt.tight_layout()
+        for bars in [bars1, bars2, bars3]:
+
+            for bar in bars:
+
+                height = bar.get_height()
+
+                ax2.annotate(
+                    f"{int(height)}",
+                    xy=(
+                        bar.get_x() + bar.get_width()/2,
+                        height
+                    ),
+                    xytext=(0, 5),
+                    textcoords="offset points",
+                    ha="center",
+                    fontsize=8,
+                )
+
         return fig
 
 

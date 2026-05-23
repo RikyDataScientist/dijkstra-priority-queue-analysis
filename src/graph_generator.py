@@ -26,7 +26,7 @@ class Graph:
                 lines.append(f"  {u} --{w}--> {v}")
         return "\n".join(lines)
 
-def generate_random_edges(num_nodes, edge_probability=0.3, max_weight=20):
+def generate_random_edges(num_nodes, edge_probability=0.8, max_weight=20):
     graph = Graph(num_nodes)
     for i in range(graph.num_nodes):
         for j in range(i + 1, graph.num_nodes):
@@ -46,16 +46,20 @@ def data_from_file():
     return graph
 
 def create_sample_graph():
-    graph = Graph(6)
+    graph = Graph(7)
     graph.add_edge(0, 1, 7)
     graph.add_edge(0, 2, 9)
     graph.add_edge(0, 5, 14)
     graph.add_edge(1, 2, 10)
     graph.add_edge(1, 3, 15)
+    graph.add_edge(1, 6, 17)
     graph.add_edge(2, 3, 11)
     graph.add_edge(2, 5, 2)
     graph.add_edge(3, 4, 6)
+    graph.add_edge(3, 5, 7)
     graph.add_edge(4, 5, 9)
+    graph.add_edge(4, 6, 12)
+    graph.add_edge(5, 6, 4)
     return graph
 
 def create_dense_graph(num_nodes: int, max_weight: int = 50) -> Graph:
