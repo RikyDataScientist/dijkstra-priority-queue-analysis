@@ -26,21 +26,30 @@ class Graph:
                 lines.append(f"  {u} --{w}--> {v}")
         return "\n".join(lines)
 
-def generate_random_edges(num_nodes, edge_probability=0.8, max_weight=20):
+def generate_random_edges(num_nodes, num_edges, max_weight=20, directed=False):
     graph = Graph(num_nodes)
-    for i in range(graph.num_nodes):
-        for j in range(i + 1, graph.num_nodes):
 
-            if random.random() < edge_probability:
-                weight = random.randint(1, max_weight)
+    possible_edges = []
 
-                graph.add_edge(i, j, weight)
+    for u in range(num_nodes):
+        for v in range(num_nodes):
+            if u != v:
+                possible_edges.append((u, v))
+
+    random.shuffle(possible_edges)
+
+    selected_edges = possible_edges[:num_edges]
+
+    for u, v in selected_edges:
+        w = random.randint(1, max_weight)
+        graph.add_edge(u, v, w, directed)
+
     return graph
 
-def data_from_file():
-    df = pd.read_csv('data/betweenness_datasets_public/PT/graph-prt-lisbon.csv', sep=';')
+def data_from_file(path):
+    df = pd.read_csv(path)
     max_node = max(df['id1'].max(), df['id2'].max())
-    graph = Graph(max_node)
+    graph = Graph(max_node + 1)
     for _, row in df.iterrows():
         graph.add_edge(row['id1'], row['id2'], row['dist'], True)
     return graph
@@ -69,3 +78,12 @@ def create_dense_graph(num_nodes: int, max_weight: int = 50) -> Graph:
             w = random.randint(1, max_weight)
             g.add_edge(u, v, w)
     return g
+
+def save_graph_to_csv(graph: Graph, filename: str):
+    edges = []
+    for u, neighbors in graph.adjacency_list.items():
+        for v, w in neighbors:
+            if u < v:  # Hindari duplikasi untuk graf tidak berarah
+                edges.append({'id1': u, 'id2': v, 'dist': w})
+    df = pd.DataFrame(edges)
+    df.to_csv(f'data/{filename}.csv', index=False)

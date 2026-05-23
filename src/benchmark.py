@@ -100,12 +100,15 @@ def run_scalability_benchmark(node_sizes: list = None,
     print("-"*90)
 
     all_results = []
+    gr = None
 
     for n in node_sizes:
         num_edges = n * edge_multiplier
         graph     = generate_random_edges(n, num_edges)
+        if n == node_sizes[-1]:
+            gr = graph  # Simpan graf terbesar untuk analisis lebih lanjut
 
-        result = run_single_benchmark(graph, source=0, runs=3)
+        result = run_single_benchmark(graph, source=0, runs=4)
 
         all_results.append({"nodes": n, **result})
 
@@ -127,7 +130,7 @@ def run_scalability_benchmark(node_sizes: list = None,
 
     print("="*90)
 
-    return all_results
+    return all_results, gr
 
 
 def run_density_benchmark() -> list:

@@ -5,7 +5,7 @@ import json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 
-from src.graph_generator import create_sample_graph, generate_random_edges
+from src.graph_generator import create_sample_graph, generate_random_edges, save_graph_to_csv
 from src.dijkstra import (
     dijkstra_basic,
     dijkstra_binary_heap,
@@ -76,14 +76,14 @@ def demo_benchmark():
     print_detailed_result(result, "Benchmark Graf 300 Node (rata-rata 5 percobaan)")
 
     # Benchmark skalabilitas
-    scalability = run_scalability_benchmark(
+    scalability, gr = run_scalability_benchmark(
         node_sizes=[50, 100, 200, 500], edge_multiplier=3
     )
 
     # Benchmark kepadatan
     run_density_benchmark()
 
-    return scalability
+    return scalability, gr
 
 
 def show_visualizations(scalability_data: list = None):
@@ -146,7 +146,8 @@ def main():
         demo_simple()
 
     if run_bench:
-        scalability_data = demo_benchmark()
+        scalability_data, gr = demo_benchmark()
+        save_graph_to_csv(gr, "graph")
 
     if not no_plot:
         show_visualizations(scalability_data)
