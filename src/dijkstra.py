@@ -167,45 +167,54 @@ def dijkstra_fibonacci_heap(graph: Graph, source: int) -> tuple:
 
 def dijkstra_postorder_heap(graph: Graph, source: int) -> tuple:
     """
-    Dijkstra menggunakan Post-order Heap (Brodal, 2024).
+    Dijkstra menggunakan Post-Order Heap.
 
-    Modifikasi dari Binary Heap yang menggunakan post-order traversal
-    untuk mendukung DecreaseKey lebih efisien dalam praktik.
+    Strategi:
+    - Tidak menggunakan decrease_key().
+    - Saat jarak membaik, masukkan entry baru ke heap.
+    - Entry lama diabaikan saat extract_min (lazy deletion).
     """
+
     start_time = time.perf_counter()
 
-    n            = graph.num_nodes
-    distances    = [INF] * n
+    n = graph.num_nodes
+
+    distances = [INF] * n
     predecessors = [None] * n
+
     distances[source] = 0
-    num_operations    = 0
+
+    num_operations = 0
 
     pq = PostOrderHeap()
 
-    # Inisialisasi
-    for v in range(n):
-        pq.insert(v, distances[v])
+    # (distance, vertex)
+    pq.insert((0, source))
+    num_operations += 1
 
-    # Algoritma Utama
     while not pq.is_empty():
+
         dist_u, u = pq.extract_min()
         num_operations += 1
 
-        if dist_u > distances[u]:
+        # Skip entry yang sudah usang
+        if dist_u != distances[u]:
             continue
 
         for v, weight in graph.neighbors(u):
-            new_dist = distances[u] + weight
+
+            new_dist = dist_u + weight
 
             if new_dist < distances[v]:
-                distances[v]    = new_dist
+
+                distances[v] = new_dist
                 predecessors[v] = u
 
-                if pq.contains(v):
-                    pq.decrease_key(v, new_dist)
-                    num_operations += 1
+                pq.insert((new_dist, v))
+                num_operations += 1
 
     execution_time = time.perf_counter() - start_time
+
     return distances, predecessors, execution_time, num_operations
 
 # Fungsi Utilitas
