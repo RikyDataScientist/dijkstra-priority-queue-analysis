@@ -1,10 +1,9 @@
 import sys
 import os
 
-
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-
+from utils.dashboard import create_html_dashboard
 from src.graph_generator import create_sample_graph, generate_random_edges, save_graph_to_csv
 from src.dijkstra import (
     dijkstra_basic,
@@ -91,6 +90,7 @@ def show_visualizations(scalability_data: list = None):
     try:
 
         print("\n  Membuat visualisasi...")
+        figure = []
 
         # 1. Visualisasi graf contoh dengan Basic Dijkstra
         graph = create_sample_graph()
@@ -100,27 +100,34 @@ def show_visualizations(scalability_data: list = None):
         fig1 = visualize_graph_with_path(
             graph, d, p, source=0, target=4, heap_name="Basic Dijkstra"
         )
+        figure.append(('Graph Basic Dijkstra', fig1))
         fig1.savefig("asset/graf_basic_dijkstra.png", dpi=150, bbox_inches="tight")
 
         # 2. Perbandingan ketiga heap dan basic dijkstra
         fig2 = compare_all_heaps_on_graph(graph, source=0, target=4)
+        figure.append(('Perbandingan Semua Heaps', fig2))
         fig2.savefig("asset/comparison_heap_and_basic.png", dpi=150, bbox_inches="tight")
 
         # 3. Grafik benchmark (jika data tersedia)
         if scalability_data:
             fig3 = plot_benchmark_results(scalability_data, metric="avg_time_ms")
+            figure.append(('Benchmark Waktu Eksekusi', fig3))
             fig3.savefig("asset/time_benchmark.png", dpi=150, bbox_inches="tight")
 
             fig4 = plot_benchmark_results(scalability_data, metric="avg_operations", separate=True)
+            figure.append(('Benchmark Operasi', fig4))
             fig4.savefig("asset/operations_benchmark.png", dpi=150, bbox_inches="tight")
 
             # Bar chart untuk satu ukuran
             idx_mid = len(scalability_data) // 2
             fig5 = plot_bar_comparison(scalability_data[idx_mid])
+            figure.append((f'Perbandingan Waktu dan Operasi (n={scalability_data[idx_mid]["nodes"]})', fig5))
             fig5.savefig("asset/bar_comparison.png", dpi=150, bbox_inches="tight")
 
         print("Gambar disimpan: asset/output_*.png")
-        plt.show()
+
+        print("Membuat dashboard HTML...")
+        create_html_dashboard(figure)
 
     except ImportError:
         print("  [INFO] matplotlib/networkx tidak terinstall.")
