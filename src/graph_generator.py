@@ -46,14 +46,6 @@ def generate_random_edges(num_nodes, num_edges, max_weight=20, directed=False):
 
     return graph
 
-def data_from_file(path):
-    df = pd.read_csv(path)
-    max_node = max(df['id1'].max(), df['id2'].max())
-    graph = Graph(max_node + 1)
-    for _, row in df.iterrows():
-        graph.add_edge(row['id1'], row['id2'], row['dist'], True)
-    return graph
-
 def create_sample_graph():
     graph = Graph(7)
     graph.add_edge(0, 1, 7)

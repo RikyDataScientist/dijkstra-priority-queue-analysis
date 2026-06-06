@@ -35,6 +35,10 @@ Proyek ini bertujuan untuk:
 
 > Brodal, G. S. (2024). Priority queues with decreasing keys. Theoretical Computer Science, 1000, 114563. https://doi.org/10.1016/j.tcs.2024.114563
 
+> GeeksforGeeks. (2025, July 23). C++ program to implement binary heap. GeeksforGeeks. https://www.geeksforgeeks.org/cpp-program-to-implement-binary-heap/
+
+> GeeksforGeeks. (2025, July 23). Fibonacci heap | Set 1 (Introduction). GeeksforGeeks. https://www.geeksforgeeks.org/fibonacci-heap-set-1-introduction/
+
 ## ⚙️ Fitur Proyek
 
 - Implementasi berbagai priority queue
@@ -49,6 +53,7 @@ Proyek ini bertujuan untuk:
 ```text
 dijkstra-priority-queue-analysis/
 ├── asset/
+│   ├── pq/
 │   ├── bar_comparison.png
 │   ├── comparison_heap_and_basic.png
 │   ├── graf_basic_dijkstra.png
@@ -56,6 +61,8 @@ dijkstra-priority-queue-analysis/
 │   └── time_benchmark.png
 ├── data/
 │   └── graph.csv
+├── output/
+│   ├── benchmark_dashboard.html
 ├── priority_queue/
 │   ├── binary_heap.py
 │   ├── fibonacci_heap.py
@@ -65,6 +72,8 @@ dijkstra-priority-queue-analysis/
 │   ├── dijkstra.py
 │   ├── graph_generator.py
 │   └── visualization.py
+├── src/
+│   └── dashboard.py
 ├── .gitignore
 ├── article.pdf
 ├── LICENSE
@@ -93,6 +102,59 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
+
+## 🔐 Priority Queue
+
+Priority Queue adalah struktur data yang menyimpan sekumpulan elemen, di mana setiap elemen memiliki prioritas. Elemen dengan prioritas tertinggi (atau terendah, tergantung implementasi) akan diproses terlebih dahulu.
+
+Berbeda dengan Queue biasa (FIFO) yang memproses data berdasarkan urutan masuk, Priority Queue memproses data berdasarkan nilai prioritasnya.
+
+### 1. Binary Heap
+
+![Binary Heap](asset/pq/binary_heap.png)
+
+Binary Heap adalah struktur data _complete binary tree_, dimana setiap level terisi penuh kecuali mungkin level terakhir yang diisi dari kiri ke kanan dan disimpan dalam bentuk array. Dalam proyek ini, jenis binary heap yang digunakan adalah _binary minimum heap_ dimana setiap nilai dari _parent_ itu selalu lebih kecil dari pada _child_.
+
+### 2. Fibonacci Heap
+
+![Fibonacci Heap](asset/pq/fibonacci_heap.png)
+
+Fibonacci Heap adalah struktur data yang terdiri dari kumpulan pohon min-heap yang disimpan dalam bentuk _circular double linked list_. Struktur data ini dirancang untuk membuat operasi-operasi tertentu menjadi efisien.
+
+### 3. Post Order Heap
+
+![Post Order Heap](asset/pq/post_order_heap.png)
+
+Post Order Heap adalah struktur data berbasis array yang menyimpan kumpulan pohon berbentuk min-heap dalam urutan _post order_ (_left child, right child, parent_). Struktur ini tidak menggunakan pointer yang menjadikannya berbeda dari Fibonacci Heap.
+
+## Kompleksitas Priority Queue
+
+| Operasi                   | Binary Heap                     | Fibonacci Heap         | Post-Order Heap               |
+| ------------------------- | ------------------------------- | ---------------------- | ----------------------------- |
+| Insert                    | O(log n)                        | O(1) amortized         | O(1) amortized                |
+| ExtractMin                | O(log n)                        | O(log n) amortized     | O(log n) amortized            |
+| FindMin                   | O(1)                            | O(1)                   | O(log n)                      |
+| DecreaseKey               | O(log n)                        | O(1) amortized         | Tidak memiliki operasi khusus |
+| Penyimpanan               | Array                           | Forest (pointer-based) | Array                         |
+| Mendukung Decreasing Keys | Ya (hanya Top-Down Binary Heap) | Ya                     | Ya                            |
+
+### Keterangan
+
+- **Binary Heap**
+  - Insert dilakukan dengan sift-up.
+  - ExtractMin dilakukan dengan sift-down.
+  - Kompleksitas bergantung pada tinggi heap, yaitu O(log n).
+
+- **Fibonacci Heap**
+  - Insert dan DecreaseKey memiliki kompleksitas O(1) amortized.
+  - ExtractMin membutuhkan konsolidasi pohon sehingga O(log n) amortized.
+  - Sangat efisien untuk algoritma yang sering melakukan DecreaseKey seperti Dijkstra.
+
+- **Post-Order Heap**
+  - Merupakan struktur heap implisit berbasis array.
+  - Insert memiliki kompleksitas O(1) amortized.
+  - ExtractMin memiliki kompleksitas O(log n) amortized.
+  - Mendukung decreasing keys tanpa memerlukan operasi DecreaseKey khusus.
 
 ## 📊 Interprestasi Grafik
 
